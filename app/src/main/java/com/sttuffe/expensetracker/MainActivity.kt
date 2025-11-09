@@ -53,10 +53,10 @@ fun ListScreen() {
     ) { innerPadding ->
         //내역 리스트 표시 영역
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            // TODO: 임시 여백 제거
-            contentPadding = innerPadding
-        ) {
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            ) {
             items(testData) { item ->
                 Text(
                     text = item,
