@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -56,7 +58,7 @@ fun ListScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            ) {
+        ) {
             items(testData) { item ->
                 Text(
                     text = item,
@@ -86,8 +88,9 @@ fun TopBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
-            .background(Color.DarkGray),
+            .background(Color.DarkGray)
+            .statusBarsPadding()
+            .height(60.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -107,8 +110,9 @@ fun BottomBar() {
         onClick = {},
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
-            .height(56.dp),
+            .navigationBarsPadding()
+            .padding(16.dp)
+            .height(52.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
         shape = RoundedCornerShape(16.dp)
     ) {
