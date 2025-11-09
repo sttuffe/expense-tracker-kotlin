@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,30 +42,20 @@ fun ListScreen() {
     //TODO: testData
     val testData = List(30) { "testData $it" }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Box( //상단 '목록' 영역
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(Color.DarkGray),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.transactions),
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopBar()
+        },
+        bottomBar = {
+            BottomBar()
         }
-
+    ) { innerPadding ->
         //내역 리스트 표시 영역
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             // TODO: 임시 여백 제거
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                top = 60.dp,
-                bottom = 100.dp
-            )
+            contentPadding = innerPadding
         ) {
             items(testData) { item ->
                 Text(
@@ -80,26 +71,6 @@ fun ListScreen() {
                 )
             }
         }
-
-        //내역 추가 버튼
-        Button(
-            //TODO: 버튼 동작 추가
-            onClick = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-                .height(56.dp)
-                .align(Alignment.BottomCenter),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.addTransaction),
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
     }
 }
 
@@ -107,4 +78,45 @@ fun ListScreen() {
 @Composable
 fun ListScreenPreview() {
     ListScreen()
+}
+
+@Composable
+fun TopBar() {
+    // '목록' topBar
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .background(Color.DarkGray),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.transactions),
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun BottomBar() {
+    //내역 추가 버튼
+    Button(
+        //TODO: 버튼 동작 추가
+        onClick = {},
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp)
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.addTransaction),
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
 }
