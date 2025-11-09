@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,8 +38,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ListScreen() {
+    //TODO: testData
+    val testData = List(30) { "testData $it" }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        Box(
+        Box( //상단 '목록' 영역
             modifier = Modifier
                 .fillMaxWidth()
                 .height(60.dp)
@@ -50,6 +55,30 @@ fun ListScreen() {
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
+        }
+
+        //내역 리스트 표시 영역
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            // TODO: 임시 여백 제거
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                top = 60.dp,
+                bottom = 100.dp
+            )
+        ) {
+            items(testData) { item ->
+                Text(
+                    text = item,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    fontSize = 18.sp
+                )
+                // 구분선
+                androidx.compose.material3.HorizontalDivider(
+                    color = Color.LightGray
+                )
+            }
         }
 
         //내역 추가 버튼
