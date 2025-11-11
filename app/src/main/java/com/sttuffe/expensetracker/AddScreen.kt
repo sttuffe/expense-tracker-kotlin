@@ -51,7 +51,9 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScreen() {
+fun AddScreen(
+    onNavigateToListScreen: () -> Unit
+) {
     // TODO: 임시 변수 제거
     var amount by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
@@ -105,7 +107,10 @@ fun AddScreen() {
         bottomBar = {
             BottomBar(
                 text = stringResource(R.string.toAdd),
-                onClick = {/*TODO*/ }
+                onClick = {
+                    //TODO: 내역 추가 저장 동작 추가
+                    onNavigateToListScreen()
+                }
             )
         }
     ) { innerPadding ->
@@ -268,7 +273,7 @@ fun TypeButton(
 @Preview(showSystemUi = true)
 @Composable
 fun AddScreenPreview() {
-    AddScreen()
+    AddScreen({})
 }
 
 private fun convertMillisToDateString(millis: Long): String {

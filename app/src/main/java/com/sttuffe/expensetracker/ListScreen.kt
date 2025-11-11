@@ -16,19 +16,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ListScreen() {
+fun ListScreen(
+    onNavigateToAddScreen: () -> Unit
+) {
     //TODO: testData
     val testData = List(30) { "testData $it" }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopBar(text = stringResource(R.string.addTransaction))
+            TopBar(text = stringResource(R.string.transactions))
         },
         bottomBar = {
             BottomBar(
                 text = stringResource(R.string.addTransaction),
-                {/*TODO*/ }
+                onClick = onNavigateToAddScreen
             )
         }
     ) { innerPadding ->
@@ -58,5 +60,5 @@ fun ListScreen() {
 @Preview(showSystemUi = true)
 @Composable
 fun ListScreenPreview() {
-    ListScreen()
+    ListScreen({})
 }
