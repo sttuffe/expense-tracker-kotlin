@@ -15,14 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TopBar() {
-    // '목록' topBar
+fun TopBar(text: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,7 +30,7 @@ fun TopBar() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(R.string.transactions),
+            text = text,
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -41,11 +39,12 @@ fun TopBar() {
 }
 
 @Composable
-fun BottomBar() {
-    //내역 추가 버튼
+fun BottomBar(
+    text: String,
+    onClick: () -> Unit
+) {
     Button(
-        //TODO: 버튼 동작 추가
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .navigationBarsPadding()
@@ -55,7 +54,7 @@ fun BottomBar() {
         shape = RoundedCornerShape(16.dp)
     ) {
         Text(
-            text = stringResource(R.string.addTransaction),
+            text = text,
             color = Color.White,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
