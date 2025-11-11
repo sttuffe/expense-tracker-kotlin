@@ -1,6 +1,7 @@
 package com.sttuffe.expensetracker
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,13 +35,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddScreen() {
     // TODO: 임시 변수 제거
@@ -41,6 +54,45 @@ fun AddScreen() {
     var content by remember { mutableStateOf("") }
     // TODO: 수입/지출 선택 임시 플래그
     var isIncomeSelected by remember { mutableStateOf(true) }
+
+    val focusManagerForKeyboard = LocalFocusManager.current
+    // 날짜 선택 다이얼 플래그, 키보드 포커스 유사
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    // 날짜 선택기=DatePicker에서 사용됨
+    // 초기 날짜 설정 = curretnTime밀리초
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = System.currentTimeMillis()
+    )
+
+    // 날짜는 밀리초 값 -> yyyy년 mm월 dd일 파싱
+    val selectedDateText = remember(datePickerState.selectedDateMillis) {
+        val millis = datePickerState.selectedDateMillis ?: System.currentTimeMillis()
+        convertMillisToDateString(millis)
+    }
+
+    // 달력 다이얼, picker 플래그가 참일 때만 플로팅 동작
+    // 플래그는 다이얼의 확인/취소, 날짜 영역 TextField 누를 때
+    if (showDatePicker) {
+        DatePickerDialog(
+            // 포커스 동작
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(R.string.confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(stringResource(R.string.dismiss))
+                }
+            }
+        ) {
+            //다이얼에 datePicker 채움
+            DatePicker(state = datePickerState)
+        }
+    }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -86,14 +138,29 @@ fun AddScreen() {
 
             // 날짜
             InputRow(label = stringResource(R.string.date)) {
-                Text(
-                    //TODO
-                    text = "2025년 11월 20일",
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
-            }
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedTextField(
+                        value = selectedDateText,
+                        onValueChange = {},
+                        readOnly = true,//없으면 키보드 동작함
+                        trailingIcon = {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Default.DateRange, // 달력 아이콘
+                                contentDescription = "날짜 선택"
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
 
+                    // 텍스트 필드 위의 투명 터치 영역
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .clickable { showDatePicker = true }
+                    )
+                }
+            }
             // 금액
             InputRow(label = stringResource(R.string.amount)) {
                 OutlinedTextField(
@@ -111,7 +178,7 @@ fun AddScreen() {
                 OutlinedTextField(
                     value = content,
                     onValueChange = { content = it },
-                    placeholder = { stringResource(R.string.content) },
+                    placeholder = { Text(stringResource(R.string.contentExam)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -181,4 +248,12 @@ fun TypeButton(
 @Composable
 fun AddScreenPreview() {
     AddScreen()
+}
+
+private fun convertMillisToDateString(millis: Long): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일")
+    return Instant.ofEpochMilli(millis)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+        .format(formatter)
 }

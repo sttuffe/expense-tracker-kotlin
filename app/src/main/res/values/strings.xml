@@ -8,5 +8,8 @@
     <string name="spending">지출</string>
     <string name="amount">금액</string>
     <string name="content">내용</string>
+    <string name="contentExam">예) 햄버거 세트 1개</string>
     <string name="date">날짜</string>
+    <string name="confirm">확인</string>
+    <string name="dismiss">취소</string>
 </resources>
