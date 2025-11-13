@@ -11,6 +11,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,39 +21,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import java.text.DecimalFormat
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun ListScreen(
-    onNavigateToAddScreen: () -> Unit
+    onNavigateToAddScreen: () -> Unit,
+    viewModel: TransactionViewModel = viewModel()
 ) {
-    //TODO: testData
-    val testData = listOf(
-        TransactionLog(
-            id = 1,
-            type = TransactionType.EXPENSE,
-            amount = 2000,
-            content = "test1",
-            date = LocalDateTime.now()
-        ),
-        TransactionLog(
-            id = 2,
-            type = TransactionType.INCOME,
-            amount = 300000000000000,
-            content = "test2test2test2test2test2test2",
-            date = LocalDateTime.now().minusDays(5) // 5일 전
-        ),
-        TransactionLog(
-            id = 3,
-            type = TransactionType.EXPENSE,
-            amount = 1000,
-            content = "test3",
-            date = LocalDateTime.now().minusDays(1) // 어제
-        )
-    )
-    val sortedData = testData.sortedByDescending { it.date }
+    val transactions by viewModel.transactions.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -71,7 +50,7 @@ fun ListScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            items(sortedData) { item ->
+            items(transactions) { item ->
                 TransactionRow(log = item)
             }
         }
