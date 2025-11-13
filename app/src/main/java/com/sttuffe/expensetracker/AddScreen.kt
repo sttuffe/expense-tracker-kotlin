@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -52,13 +53,14 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddScreen(
-    onNavigateToListScreen: () -> Unit
+    onNavigateToListScreen: () -> Unit,
+    viewModel: TransactionViewModel = viewModel()
 ) {
     // TODO: 임시 변수 제거
     var amount by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
-    // TODO: 수입/지출 선택 임시 플래그
-    var isIncomeSelected by remember { mutableStateOf(true) }
+
+    var selectedType by remember { mutableStateOf(TransactionType.EXPENSE) }
 
     val focusManagerForKeyboard = LocalFocusManager.current
     // 날짜 선택 다이얼 플래그, 키보드 포커스 유사
@@ -108,7 +110,12 @@ fun AddScreen(
             BottomBar(
                 text = stringResource(R.string.toAdd),
                 onClick = {
-                    //TODO: 내역 추가 저장 동작 추가
+                    viewModel.addTransaction(
+                        type = selectedType,
+                        amountString = amount,
+                        content = content,
+                        dateMillis = datePickerState.selectedDateMillis
+                    )
                     onNavigateToListScreen()
                 }
             )
@@ -135,16 +142,20 @@ fun AddScreen(
                     TypeButton(
                         text = stringResource(R.string.income),
                         color = Color(0xFF01579B),
-                        isSelected = isIncomeSelected,
-                        onClick = { isIncomeSelected = true },
+                        isSelected = (selectedType == TransactionType.INCOME),
+                        onClick = {
+                            selectedType = TransactionType.INCOME
+                        },
                         modifier = Modifier.weight(1f)
                     )
                     // '지출'
                     TypeButton(
                         text = stringResource(R.string.spending),
                         color = Color(0xFFB71C1C),
-                        isSelected = !isIncomeSelected,
-                        onClick = { isIncomeSelected = false },
+                        isSelected = (selectedType == TransactionType.EXPENSE),
+                        onClick = {
+                            selectedType = TransactionType.EXPENSE
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -179,7 +190,11 @@ fun AddScreen(
             InputRow(label = stringResource(R.string.amount)) {
                 OutlinedTextField(
                     value = amount,
-                    onValueChange = { amount = it },
+                    onValueChange = { newAmount ->
+                        if (newAmount.all { it.isDigit() }) {
+                            amount = newAmount
+                        }
+                    },
                     placeholder = { Text(stringResource(R.string.amount)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,

@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ExpenseTrackerApp() {
     val navController = rememberNavController()
+    val viewModel: TransactionViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -31,7 +33,8 @@ fun ExpenseTrackerApp() {
             ListScreen(
                 onNavigateToAddScreen = {
                     navController.navigate("add")
-                }
+                },
+                viewModel = viewModel
             )
         }
 
@@ -39,7 +42,8 @@ fun ExpenseTrackerApp() {
             AddScreen(
                 onNavigateToListScreen = {
                     navController.navigate("list")
-                }
+                },
+                viewModel = viewModel
             )
         }
     }
