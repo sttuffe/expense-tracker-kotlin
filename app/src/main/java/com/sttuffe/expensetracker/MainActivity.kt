@@ -41,7 +41,7 @@ fun ExpenseTrackerApp() {
         composable(route = "add") {
             AddScreen(
                 onNavigateToListScreen = {
-                    navController.navigate("list")
+                    navController.popBackStack()
                 },
                 viewModel = viewModel
             )
