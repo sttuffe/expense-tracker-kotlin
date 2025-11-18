@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +24,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ExpenseTrackerApp() {
     val navController = rememberNavController()
-    val viewModel: TransactionViewModel = viewModel()
+
+    val context = LocalContext.current
+
+    //  Application -> DB -> DAO
+    val application = context.applicationContext as ExpenseApplication
+    val dao = application.database.transactionDao()
+
+    // ViewModel DB와 연결
+    val viewModel: TransactionViewModel = viewModel(
+        factory = TransactionViewModelFactory(dao)
+    )
 
     NavHost(
         navController = navController,

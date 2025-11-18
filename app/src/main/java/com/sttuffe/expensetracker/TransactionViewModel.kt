@@ -1,30 +1,30 @@
 package com.sttuffe.expensetracker
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.sttuffe.expensetracker.data.TransactionDAO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class TransactionViewModel: ViewModel() {
+class TransactionViewModel(
+    private val dao: TransactionDAO
+) : ViewModel() {
     private val _transactions = MutableStateFlow<List<TransactionLog>>(emptyList())
 
     val transactions: StateFlow<List<TransactionLog>> = _transactions.asStateFlow()
 
     init {
-        //TODO:TestData
-        loadTestData()
-    }
-
-    private fun loadTestData() {
-        _transactions.value = listOf(
-            TransactionLog(1, TransactionType.EXPENSE, 1000, "test1", LocalDateTime.now()),
-            TransactionLog(2, TransactionType.INCOME, 999999000, "test2", LocalDateTime.now().minusDays(5)),
-            TransactionLog(3, TransactionType.EXPENSE, 3000, "test3", LocalDateTime.now().minusDays(1)),
-            TransactionLog(4, TransactionType.EXPENSE, 4000, "test4", LocalDateTime.now().minusHours(2))
-        ).sortedByDescending { it.date }
+        viewModelScope.launch {
+            dao.getAllTransactions().collect { list ->
+                _transactions.value = list
+            }
+        }
     }
 
     fun addTransaction(
@@ -47,13 +47,26 @@ class TransactionViewModel: ViewModel() {
 
         // 새 TransactionLog 생성
         val newLog = TransactionLog(
-            id = System.currentTimeMillis(), //TODO: 임시ID
+            // id=0인 경우 Room에서 자동 처리
+            id = 0,
             type = type,
             amount = amount,
             content = content,
             date = date
         )
 
-        _transactions.value = listOf(newLog) + _transactions.value
+        viewModelScope.launch {
+            dao.insertTransaction(newLog)
+        }
+    }
+}
+
+class TransactionViewModelFactory(private val dao: TransactionDAO) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(TransactionViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return TransactionViewModel(dao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
