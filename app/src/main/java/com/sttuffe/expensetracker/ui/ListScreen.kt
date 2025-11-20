@@ -5,14 +5,24 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +47,22 @@ fun ListScreen(
 ) {
     val transactions by viewModel.transactions.collectAsState()
 
+    // 삭제 대기 임시 변수
+    var transactionToDelete by remember { mutableStateOf<TransactionLog?>(null) }
+
+    // 삭제 확인 다이얼로그
+    if (transactionToDelete != null) {
+        DeleteDialog(
+            onConfirm = {
+                transactionToDelete?.let { viewModel.deleteTransaction(it) }
+                transactionToDelete = null
+            },
+            onDismiss = {
+                transactionToDelete = null
+            }
+        )
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -55,15 +81,25 @@ fun ListScreen(
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            items(transactions) { item ->
-                TransactionRow(log = item)
+            items(
+                items = transactions,
+                key = { transaction -> transaction.id }
+            ) { item ->
+                TransactionRow(
+                    log = item,
+                    onDeleteClick = {
+                        transactionToDelete = item
+                    })
             }
         }
     }
 }
 
 @Composable
-fun TransactionRow(log: TransactionLog) {
+fun TransactionRow(
+    log: TransactionLog,
+    onDeleteClick: () -> Unit
+) {
     // 날짜 포맷
     val dateFormatter = DateTimeFormatter.ofPattern("MM.dd")
     val dateString = log.date.format(dateFormatter)
@@ -117,9 +153,47 @@ fun TransactionRow(log: TransactionLog) {
                     modifier = Modifier.padding(start = 12.dp)
                 )
             }
+
+            // 삭제 버튼
+            IconButton(
+                modifier = Modifier
+//                    .padding(start = 8.dp)
+                    .size(36.dp),
+                onClick = onDeleteClick
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(R.string.delete)
+                )
+            }
         }
         HorizontalDivider(color = Color.LightGray, thickness = 0.5.dp)
     }
+}
+
+@Composable
+fun DeleteDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.transactionDelete)) },
+        text = { Text(text = stringResource(R.string.deleteConfirm)) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(
+                    stringResource(R.string.delete),
+                    color = Color(0xFFB71C1C)
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Preview(showSystemUi = true)

@@ -61,6 +61,13 @@ class TransactionViewModel(
             dao.insertTransaction(newLog)
         }
     }
+
+    // 삭제
+    fun deleteTransaction(transaction: TransactionLog) {
+        viewModelScope.launch {
+            dao.deleteTransaction(transaction)
+        }
+    }
 }
 
 class TransactionViewModelFactory(private val dao: TransactionDAO) : ViewModelProvider.Factory {
