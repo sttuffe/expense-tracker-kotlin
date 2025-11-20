@@ -1,4 +1,4 @@
-package com.sttuffe.expensetracker
+package com.sttuffe.expensetracker.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -46,6 +46,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sttuffe.expensetracker.R
+import com.sttuffe.expensetracker.TransactionViewModel
+import com.sttuffe.expensetracker.data.TransactionType
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -56,7 +59,7 @@ fun AddScreen(
     onNavigateToListScreen: () -> Unit,
     viewModel: TransactionViewModel = viewModel()
 ) {
-    // TODO: 임시 변수 제거
+
     var amount by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
 

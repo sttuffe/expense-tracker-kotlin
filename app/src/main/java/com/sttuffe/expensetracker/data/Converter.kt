@@ -1,7 +1,7 @@
 package com.sttuffe.expensetracker.data
 
 import androidx.room.TypeConverter
-import com.sttuffe.expensetracker.TransactionType
+import com.sttuffe.expensetracker.data.TransactionType
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId

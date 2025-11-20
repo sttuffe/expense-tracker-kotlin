@@ -1,4 +1,4 @@
-package com.sttuffe.expensetracker
+package com.sttuffe.expensetracker.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sttuffe.expensetracker.R
+import com.sttuffe.expensetracker.TransactionViewModel
+import com.sttuffe.expensetracker.data.TransactionLog
+import com.sttuffe.expensetracker.data.TransactionType
 import java.text.DecimalFormat
 import java.time.format.DateTimeFormatter
 
@@ -88,7 +93,7 @@ fun TransactionRow(log: TransactionLog) {
                 fontSize = 16.sp,
                 color = Color.Black,
                 maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, //  ... 처리
+                overflow = TextOverflow.Ellipsis, //  ... 처리
                 modifier = Modifier.weight(1f) //
             )
 

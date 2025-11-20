@@ -1,4 +1,4 @@
-package com.sttuffe.expensetracker
+package com.sttuffe.expensetracker.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

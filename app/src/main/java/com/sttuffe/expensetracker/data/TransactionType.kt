@@ -1,4 +1,4 @@
-package com.sttuffe.expensetracker
+package com.sttuffe.expensetracker.data
 
 enum class TransactionType {
     INCOME,

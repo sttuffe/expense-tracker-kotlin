@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.sttuffe.expensetracker.TransactionLog
 
 @Database(
     entities = [TransactionLog::class],

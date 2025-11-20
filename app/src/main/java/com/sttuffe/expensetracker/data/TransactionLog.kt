@@ -1,4 +1,4 @@
-package com.sttuffe.expensetracker
+package com.sttuffe.expensetracker.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

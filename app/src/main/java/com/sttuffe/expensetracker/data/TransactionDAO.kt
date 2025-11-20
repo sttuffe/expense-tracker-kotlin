@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.sttuffe.expensetracker.TransactionLog
+import com.sttuffe.expensetracker.data.TransactionLog
 import kotlinx.coroutines.flow.Flow
 
 @Dao
