@@ -25,6 +25,10 @@
 - Minimum SDK: API 26
 - Target SDK: API 34
 
+## 설치
+
+[![APK 다운로드](https://img.shields.io/badge/Download-APK-blue?style=for-the-badge&logo=android)](https://github.com/sttuffe/expense-tracker-kotlin/releases)
+
 ---
 
 ## 기능 구현
